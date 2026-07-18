@@ -21,6 +21,14 @@ build next).
 | PII redaction | Python `re` (regex) | Deterministic, auditable, no LLM risk |
 | Synthetic test audio | pyttsx3 + espeak-ng (offline TTS) | Free, no real call recordings existed to use |
 
+## Dashboard
+
+<img width="1920" height="915" alt="dashboard-sales-director" src="https://github.com/user-attachments/assets/60095a02-590e-451a-9f55-4fc706769a1c" />
+
+<img width="1920" height="915" alt="dashboard-flag-grounding" src="https://github.com/user-attachments/assets/b2d87fb0-24d4-4e97-878c-aec08d052e42" />
+
+<img width="1920" height="915" alt="dashboard-contest-flag" src="https://github.com/user-attachments/assets/c3a61c29-c505-41ed-a654-4e03a13bfeb2" />
+
 ## Troubleshooting for a fresh run
 
 A few things a first-time evaluator is likely to hit — none of these are bugs,
