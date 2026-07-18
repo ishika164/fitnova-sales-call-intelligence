@@ -14,7 +14,7 @@ build next).
 |---|---|---|
 | Language | Python 3.11 | |
 | Transcription | faster-whisper (local, free) | No API cost, runs on CPU |
-| Diarization | pyannote.audio, with pause-based heuristic fallback | Free; fallback confirmed firing in real testing |
+| Diarization | Pause-based heuristic (pyannote.audio attempted as primary, but failed with a torchaudio dependency conflict in testing) | Free; the fallback path is what actually ran and was verified live |
 | LLM scoring & tagging | Groq API — Llama 3.3 70B (free tier) | Reliable structured JSON output, no cost |
 | Database | SQLite + SQLAlchemy ORM | Zero setup, real relational schema |
 | Dashboard | Streamlit | Fast to build 3 real role-based views |
