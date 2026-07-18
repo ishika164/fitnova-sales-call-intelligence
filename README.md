@@ -1,8 +1,9 @@
-# FitNova Sales-Call Intelligence — Prototype
+# FitNova Sales Call Intelligence Pipeline
 
 A working, end-to-end pipeline: call audio in → transcription → diarization →
 PII redaction → LLM scoring & issue-tagging → storage → role-based dashboard
 with a contest/feedback loop.
+
 
 See `system_design.md` for the architecture diagram and `WRITEUP.md` for the
 full design rationale (rubric, tag taxonomy, edge cases, trade-offs, what I'd
