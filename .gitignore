@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.env
+data/fitnova.db
+data/_tmp_tts/
+.venv/

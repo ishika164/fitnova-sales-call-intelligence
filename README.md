@@ -1,0 +1,96 @@
+# FitNova Sales-Call Intelligence — Prototype
+
+A working, end-to-end pipeline: call audio in → transcription → diarization →
+PII redaction → LLM scoring & issue-tagging → storage → role-based dashboard
+with a contest/feedback loop.
+
+See `system_design.md` for the architecture diagram and `WRITEUP.md` for the
+full design rationale (rubric, tag taxonomy, edge cases, trade-offs, what I'd
+build next).
+
+## Setup
+
+Requires Python 3.10+ and `ffmpeg` (for audio processing) and `espeak-ng`
+(only needed to regenerate the synthetic test calls; not needed if you
+supply your own audio).
+
+```bash
+git clone <this repo>
+cd fitnova
+
+# 1. Get a free Groq API key (no credit card): https://console.groq.com/keys
+export GROQ_API_KEY=your_key_here
+
+# 2. (Optional) Get a free HuggingFace token for real diarization:
+#    accept terms at https://huggingface.co/pyannote/speaker-diarization-3.1
+#    then get a token at https://huggingface.co/settings/tokens
+export HF_TOKEN=your_token_here
+#    If you skip this, the pipeline automatically uses a pause-based
+#    heuristic fallback instead of failing.
+
+# 3. Run everything
+./run.sh          # macOS/Linux
+.\run.ps1         # Windows PowerShell
+```
+
+This installs dependencies, generates 3 synthetic test calls (if not already
+present), seeds the org structure, runs the full pipeline on all calls, and
+launches the dashboard at http://localhost:8501.
+
+To re-run just the pipeline (e.g. after dropping new audio files into
+`data/raw_calls/`):
+```bash
+python3 -m src.pipeline
+```
+
+## What's real vs mocked
+
+| Component | Status | Notes |
+|---|---|---|
+| Ingestion adapter pattern | **Real** | `LocalFolderAdapter` is the one mocked *source* (stands in for a telephony/CRM API), but the adapter interface itself is real and swappable — adding a vendor means writing one class, not touching the pipeline. |
+| Call audio | **Synthetic** | Generated with offline TTS (`src/generate_test_calls.py`) since no real FitNova recordings exist. Scripts are realistic dialogues written to deliberately include specific violations, so the analysis engine has real cases to catch. |
+| Transcription | **Real** | `faster-whisper`, runs locally, no API cost. |
+| Diarization | **Real, with documented fallback** | Diarization | **Real, with documented fallback — fallback confirmed firing in practice** | Primary: `pyannote.audio`. In actual testing, pyannote failed with a `torchaudio` version-compatibility error (`module 'torchaudio' has no attribute 'set_audio_backend'` — a known breaking change between recent torchaudio releases and pyannote's pinned dependency expectations). The pipeline caught this and fell back to the pause-based heuristic automatically, exactly as designed — this was observed live, not just anticipated. The dashboard now surfaces which method was used per call (`diarization_method` column) so a reviewer can see when flag timestamps came from the lower-confidence fallback. Fixing the pyannote/torchaudio version pin was out of scope for this submission window; noted as a follow-up. |
+| PII redaction | **Real** | Regex-based, runs before storage. |
+| Scoring & tagging | **Real** | Groq-hosted Llama 3.3 70B, free tier, JSON-schema-forced output. |
+| Anti-hallucination grounding check | **Real, unit-tested** | See `tests/test_pipeline_run.py` and the walkthrough in `WRITEUP.md` — fabricated/invalid flags are provably dropped before they reach the DB. |
+| Database & storage | **Real** | SQLite via SQLAlchemy, actual schema, actual writes, actual idempotency (proven by running the pipeline twice — second run shows all `SKIP`). |
+| Dashboard | **Real** | Streamlit, 3 role views, live queries against the DB. |
+| Feedback loop (contest a flag) | **Real** | Advisor can contest, Team Leader can resolve, both write back to the DB. |
+| Retries on external calls | **Real** | Bounded retry + backoff around transcription and analysis calls; failures are isolated per-call and logged to `Call.processing_error`, not fatal to the batch. |
+
+## A note on this build environment
+
+I built and tested this in a sandbox whose network is restricted to package
+registries only (no `huggingface.co`, no `api.groq.com`). That means:
+- The database, ingestion, PII redaction, pipeline orchestration (including
+  idempotency and retry logic), and dashboard were all tested **live**,
+  against the real DB, including with deliberately mocked failure/hallucination
+  cases (see `tests/test_pipeline_run.py`).
+- Transcription and analysis were validated at the **logic level** (the
+  anti-hallucination grounding check has a dedicated, passing unit test) but
+  the actual external API calls need to be run on a machine with normal
+  internet access — which is what `./run.sh` is for.
+
+## Project structure
+
+```
+src/
+  ingestion.py        # source-agnostic adapter pattern
+  transcribe.py        # faster-whisper + pyannote/heuristic diarization
+  pii_redaction.py      # regex-based PII redaction
+  analysis.py           # scoring + tagging + anti-hallucination grounding
+  models.py              # SQLAlchemy schema
+  seed.py                  # org structure seeding
+  pipeline.py               # orchestrator: ingest -> transcribe -> redact -> analyze -> store
+  generate_test_calls.py     # synthetic call audio generator (mock data source)
+dashboard/
+  app.py                      # Streamlit — 3 role views + contest UI
+tests/
+  test_pipeline_run.py         # end-to-end pipeline test with mocked external calls
+data/
+  call_scripts.json             # ground-truth dialogue scripts for synthetic calls
+  raw_calls/                     # generated audio (created by generate_test_calls.py)
+system_design.md                  # architecture diagram
+WRITEUP.md                         # full design writeup
+```

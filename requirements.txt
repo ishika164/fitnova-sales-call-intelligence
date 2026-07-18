@@ -1,0 +1,11 @@
+sqlalchemy==2.0.51
+faster-whisper==1.2.1
+pyttsx3==2.99
+pydub==0.25.1
+streamlit==1.59.2
+pandas==3.0.2
+requests==2.33.1
+
+# optional, only needed for real diarization (see README) — install
+# separately if you set HF_TOKEN; otherwise the heuristic fallback runs
+# pyannote.audio==3.3.2

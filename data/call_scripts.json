@@ -1,0 +1,57 @@
+{
+  "call_good_001": {
+    "description": "Clean call: proper discovery, honest claims, handles objection, books trial",
+    "advisor": "Advisor",
+    "customer": "Customer",
+    "lines": [
+      ["Advisor", "Hi, good afternoon, this is Priya calling from FitNova. Am I speaking with Rahul?"],
+      ["Customer", "Yes, speaking."],
+      ["Advisor", "Great, thanks for filling the form on our site. Before I pitch anything, can I ask what made you look us up?"],
+      ["Customer", "I want to lose some weight, maybe ten kilos, and I have a desk job so no time to plan meals."],
+      ["Advisor", "Got it. Any injuries or health conditions I should know about?"],
+      ["Customer", "No injuries, but I do have mild thyroid, on medication."],
+      ["Advisor", "Thanks for sharing that, we will factor it in. What is your budget range roughly, and are you looking at online or in-person sessions?"],
+      ["Customer", "Online is fine, budget maybe five to eight thousand a month."],
+      ["Advisor", "That fits our online coaching plan well. It includes a coach-designed meal plan, weekly check-ins, and workout videos. Most clients see visible change in eight to twelve weeks with consistency, though results do vary person to person."],
+      ["Customer", "Okay that sounds reasonable. Is it expensive though?"],
+      ["Advisor", "The plan is seven thousand a month, and we also have a free trial session first so you can meet the coach and see if it fits before paying anything."],
+      ["Customer", "Sure, I would like to try the free session."],
+      ["Advisor", "Perfect. I can book you for Saturday 11 AM online with coach Aditi. Does that work?"],
+      ["Customer", "Yes that works."],
+      ["Advisor", "Great, you will get a confirmation on WhatsApp and email. Anything else you want to ask before we wrap up?"],
+      ["Customer", "No, that is all, thank you."],
+      ["Advisor", "Thank you Rahul, talk soon."]
+    ]
+  },
+  "call_bad_001": {
+    "description": "Violation-heavy call: no real discovery, guaranteed results, urgency pressure, price before value, undisclosed costs, talks over customer, weak trial booking",
+    "advisor": "Advisor",
+    "customer": "Customer",
+    "lines": [
+      ["Advisor", "Hi this is Vikram from FitNova, am I talking to Sneha?"],
+      ["Customer", "Yes."],
+      ["Advisor", "Great, so we have a premium transformation plan at nine thousand a month, best one we have, let me tell you about it."],
+      ["Customer", "Okay, but can you first ask what I am looking for?"],
+      ["Advisor", "Sure sure, but let me just say, this plan guarantees results, you will lose weight one hundred percent guaranteed within one month, everyone does."],
+      ["Customer", "One month seems fast, I was thinking more long term, I have PCOS so—"],
+      ["Advisor", "Yeah yeah PCOS is very common, no issue, this plan fixes that too, trust me. Now this offer is only valid today, if you don't decide right now the price goes up tomorrow, so I need an answer in the next two minutes."],
+      ["Customer", "That's a bit sudden, can I think about it and call back?"],
+      ["Advisor", "No no there won't be a slot left if you wait, seats are almost full. Just pay the nine thousand now, oh and there is also a one time registration fee of fifteen hundred we collect separately, and I can send the payment link right now."],
+      ["Customer", "Wait, you didn't mention that fee before. And I haven't agreed to anything yet."],
+      ["Advisor", "It's a small fee, don't worry about it, everyone pays it, so should I send the link now, yes or no?"],
+      ["Customer", "I am not comfortable deciding right now."],
+      ["Advisor", "Okay fine I will just note you as interested, bye."]
+    ]
+  },
+  "call_nonsales_001": {
+    "description": "Non-sales call edge case: wrong number",
+    "advisor": "Advisor",
+    "customer": "Customer",
+    "lines": [
+      ["Advisor", "Hi, good morning, this is calling from FitNova, am I speaking with Anjali?"],
+      ["Customer", "No sorry, wrong number, there is no Anjali here."],
+      ["Advisor", "Oh, apologies for the trouble, have a good day."],
+      ["Customer", "No problem, bye."]
+    ]
+  }
+}
