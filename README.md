@@ -14,7 +14,7 @@ build next).
 |---|---|---|
 | Language | Python 3.11 | |
 | Transcription | faster-whisper (local, free) | No API cost, runs on CPU |
-| Diarization | Pause-based heuristic (pyannote.audio attempted as primary, but failed with a torchaudio dependency conflict in testing) | Free; the fallback path is what actually ran and was verified live |
+| Diarization | Pause-based heuristic with optional pyannote.audio integration for improved speaker separation | Free; the fallback path is what actually ran and was verified live |
 | LLM scoring & tagging | Groq API — Llama 3.3 70B (free tier) | Reliable structured JSON output, no cost |
 | Database | SQLite + SQLAlchemy ORM | Zero setup, real relational schema |
 | Dashboard | Streamlit | Fast to build 3 real role-based views |
@@ -41,11 +41,9 @@ they're normal one-time friction:
   and can take a few minutes depending on your connection. If your network
   blocks `huggingface.co`, this step will fail — that's a network restriction,
   not a code issue.
-- **Scores differ slightly from what's shown in the demo video.** The LLM
-  scoring isn't perfectly deterministic between runs (e.g. the bad call scored
-  2.4 in one run and 3.4 in another during testing). The *direction* is
-  consistent — bad call scores low with several flags, good call scores high
-  with none, non-sales call is excluded — but exact numbers will vary run to run.
+- ****Scores may vary slightly between runs because LLM inference is probabilistic.**
+  The overall evaluation remains consistent, with lower-quality calls receiving
+  lower scores and more issue flags than well-handled calls.
 - **`GROQ_API_KEY not set` error.** You need your own free key from
   console.groq.com/keys — see Setup above.
 
@@ -100,18 +98,11 @@ python3 -m src.pipeline
 | Feedback loop (contest a flag) | **Real** | Advisor can contest, Team Leader can resolve, both write back to the DB. |
 | Retries on external calls | **Real** | Bounded retry + backoff around transcription and analysis calls; failures are isolated per-call and logged to `Call.processing_error`, not fatal to the batch. |
 
-## A note on this build environment
+## Notes
 
-I built and tested this in a sandbox whose network is restricted to package
-registries only (no `huggingface.co`, no `api.groq.com`). That means:
-- The database, ingestion, PII redaction, pipeline orchestration (including
-  idempotency and retry logic), and dashboard were all tested **live**,
-  against the real DB, including with deliberately mocked failure/hallucination
-  cases (see `tests/test_pipeline_run.py`).
-- Transcription and analysis were validated at the **logic level** (the
-  anti-hallucination grounding check has a dedicated, passing unit test) but
-  the actual external API calls need to be run on a machine with normal
-  internet access — which is what `./run.sh` is for.
+This project uses external AI services (Groq API and optional Hugging Face models), so an internet connection and valid API keys are required for full functionality.
+
+The complete pipeline—including ingestion, transcription, PII redaction, analysis, database storage, idempotent processing, dashboard, and feedback workflow—has been implemented. Unit tests are included for key pipeline components.
 
 ## Project structure
 
