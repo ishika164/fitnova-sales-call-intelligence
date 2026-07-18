@@ -8,6 +8,19 @@ See `system_design.md` for the architecture diagram and `WRITEUP.md` for the
 full design rationale (rubric, tag taxonomy, edge cases, trade-offs, what I'd
 build next).
 
+## Tech stack
+
+| Layer | Tool | Why |
+|---|---|---|
+| Language | Python 3.11 | |
+| Transcription | faster-whisper (local, free) | No API cost, runs on CPU |
+| Diarization | pyannote.audio, with pause-based heuristic fallback | Free; fallback confirmed firing in real testing |
+| LLM scoring & tagging | Groq API — Llama 3.3 70B (free tier) | Reliable structured JSON output, no cost |
+| Database | SQLite + SQLAlchemy ORM | Zero setup, real relational schema |
+| Dashboard | Streamlit | Fast to build 3 real role-based views |
+| PII redaction | Python `re` (regex) | Deterministic, auditable, no LLM risk |
+| Synthetic test audio | pyttsx3 + espeak-ng (offline TTS) | Free, no real call recordings existed to use |
+
 ## Troubleshooting for a fresh run
 
 A few things a first-time evaluator is likely to hit — none of these are bugs,
