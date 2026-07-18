@@ -8,6 +8,39 @@ See `system_design.md` for the architecture diagram and `WRITEUP.md` for the
 full design rationale (rubric, tag taxonomy, edge cases, trade-offs, what I'd
 build next).
 
+## Tech stack
+
+| Layer | Tool | Why |
+|---|---|---|
+| Language | Python 3.11 | |
+| Transcription | faster-whisper (local, free) | No API cost, runs on CPU |
+| Diarization | Pause-based heuristic (pyannote.audio attempted as primary, but failed with a torchaudio dependency conflict in testing) | Free; the fallback path is what actually ran and was verified live |
+| LLM scoring & tagging | Groq API — Llama 3.3 70B (free tier) | Reliable structured JSON output, no cost |
+| Database | SQLite + SQLAlchemy ORM | Zero setup, real relational schema |
+| Dashboard | Streamlit | Fast to build 3 real role-based views |
+| PII redaction | Python `re` (regex) | Deterministic, auditable, no LLM risk |
+| Synthetic test audio | pyttsx3 + espeak-ng (offline TTS) | Free, no real call recordings existed to use |
+
+## Troubleshooting for a fresh run
+
+A few things a first-time evaluator is likely to hit — none of these are bugs,
+they're normal one-time friction:
+
+- **Windows: `.\run.ps1` fails with "running scripts is disabled on this system."**
+  Run this once, then retry: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
+- **First run is slow / seems stuck at "Processing call...".** `faster-whisper`
+  downloads a ~500MB model on its first run (cached afterwards). This is normal
+  and can take a few minutes depending on your connection. If your network
+  blocks `huggingface.co`, this step will fail — that's a network restriction,
+  not a code issue.
+- **Scores differ slightly from what's shown in the demo video.** The LLM
+  scoring isn't perfectly deterministic between runs (e.g. the bad call scored
+  2.4 in one run and 3.4 in another during testing). The *direction* is
+  consistent — bad call scores low with several flags, good call scores high
+  with none, non-sales call is excluded — but exact numbers will vary run to run.
+- **`GROQ_API_KEY not set` error.** You need your own free key from
+  console.groq.com/keys — see Setup above.
+
 ## Setup
 
 Requires Python 3.10+ and `ffmpeg` (for audio processing) and `espeak-ng`
