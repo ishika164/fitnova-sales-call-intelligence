@@ -23,11 +23,11 @@ build next).
 
 ## Dashboard
 
-<img width="1920" height="1080" alt="dashboard-sales-director" src="https://github.com/user-attachments/assets/71498ac2-cf91-4de7-b03f-f6e4d1fbedd3" />
+<img width="1920" height="915" alt="dashboard-sales-director" src="https://github.com/user-attachments/assets/60095a02-590e-451a-9f55-4fc706769a1c" />
 
-<img width="1920" height="1080" alt="dashboard-flag-grounding" src="https://github.com/user-attachments/assets/09c6977b-1558-4811-bc67-2f7118ebba7a" />
+<img width="1920" height="915" alt="dashboard-flag-grounding" src="https://github.com/user-attachments/assets/b2d87fb0-24d4-4e97-878c-aec08d052e42" />
 
-<img width="1920" height="1080" alt="dashboard-contest-flag" src="https://github.com/user-attachments/assets/69611ba8-6822-4b65-a154-f42766eb1f07" />
+<img width="1920" height="915" alt="dashboard-contest-flag" src="https://github.com/user-attachments/assets/c3a61c29-c505-41ed-a654-4e03a13bfeb2" />
 
 ## Troubleshooting for a fresh run
 
